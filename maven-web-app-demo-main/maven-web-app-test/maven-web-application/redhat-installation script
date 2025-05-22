@@ -1,0 +1,102 @@
+
+## Prerequisites
+1. **AWS Account**: Ensure you have an active AWS account and the necessary credentials.
+2. **EC2 Instance**: Create a Red Hat EC2 instance (e.g., t2.medium) with at least 4GB of RAM.
+3. **Security Group Configuration**: Configure the instance’s security group to allow required ports (e.g., port 22 for SSH access).
+4. **Basic Tools Installed**: Ensure that `wget`, `vim`, `tree`, `unzip`, and `git` are available or can be installed. These tools help in downloading Maven and managing files.
+5. **Java Installation**: Apache Maven requires Java. Make sure to install Java OpenJDK 1.8 (or newer).
+
+---
+
+### Detailed Installation Steps
+
+#### Step 1: Connect to Your EC2 Instance
+1. Use an SSH client or terminal to connect to the Red Hat EC2 instance.
+2. Once connected, consider setting the hostname for clarity:
+   ```bash
+   sudo hostname maven
+   ```
+   
+#### Step 2: Install Required Packages
+1. Navigate to the `/opt` directory, which is a good location to keep system-wide software:
+   ```bash
+   cd /opt
+   ```
+2. Install the required packages:
+   ```bash
+   sudo yum install -y wget vim tree unzip git-all
+   ```
+   - **wget**: Used for downloading files from the internet.
+   - **vim**: A text editor for editing configuration files.
+   - **tree**: For viewing directory structures.
+   - **unzip**: To extract `.zip` archives.
+   - **git-all**: For version control and code management.
+
+#### Step 3: Install Java OpenJDK
+Apache Maven runs on Java, so you need a compatible JDK:
+```bash
+sudo yum install -y java-1.8.0-openjdk-devel
+```
+   
+After installation, verify that Java is installed:
+```bash
+java -version
+git --version
+```
+You should see the installed versions displayed.
+
+#### Step 4: Download Apache Maven
+Check the Apache Maven official download page for the latest stable version. Here, we use version 3.9.9 as an example:
+```bash
+sudo wget https://dlcdn.apache.org/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.zip
+```
+This command downloads the Maven binary distribution into `/opt`.
+
+#### Step 5: Extract and Organize Maven Files
+Extract the downloaded Maven archive:
+```bash
+sudo unzip apache-maven-3.9.9-bin.zip -d /opt
+```
+   
+Remove the original `.zip` file to keep the directory clean:
+```bash
+sudo rm -rf apache-maven-3.9.9-bin.zip
+```
+   
+Rename the extracted Maven directory to `maven` for simplicity:
+```bash
+sudo mv /opt/apache-maven-3.9.9 /opt/maven
+```
+
+At this point, Maven’s files are located at `/opt/maven`.
+
+#### Step 6: Set up Environment Variables
+To run `mvn` commands from any directory, you need to define environment variables and update the `PATH`.
+
+1. Edit the `.bash_profile` in the home directory of the user you are logged in as (e.g., `ec2-user`). Append the following lines:
+   ```bash
+   echo "export M2_HOME=/opt/maven" >> ~/.bash_profile
+   echo "export PATH=\$PATH:\$M2_HOME/bin" >> ~/.bash_profile
+   ```
+   
+2. Apply the changes to the current session:
+   ```bash
+   source ~/.bash_profile
+   ```
+
+#### Step 7: Verify Maven Installation
+Finally, verify that Maven is accessible and functioning correctly:
+```bash
+mvn -version
+```
+   
+You should see output displaying the Maven version, Java home, and other relevant details. If the version is displayed, the installation is successful.
+
+---
+
+### Conclusion
+By following these steps, you have:
+- Installed the prerequisite Java JDK.
+- Downloaded and extracted Apache Maven.
+- Configured environment variables so that Maven commands can run from any location.
+- Verified that Maven is correctly installed on your Red Hat EC2 instance.
